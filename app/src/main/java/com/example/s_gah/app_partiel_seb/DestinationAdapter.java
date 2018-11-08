@@ -16,6 +16,7 @@ public class DestinationAdapter extends BaseAdapter {
     LayoutInflater inflater;
 
     private class ViewHolder {
+        TextView tvType;
         TextView tvTitre;
         TextView tvDistance;
     }
@@ -33,6 +34,7 @@ public class DestinationAdapter extends BaseAdapter {
             Log.v("test", "convertView is null");
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.activity_destination, null);
+            holder.tvType = (TextView) convertView.findViewById(R.id.type);
             holder.tvTitre = (TextView) convertView.findViewById(R.id.title);
             holder.tvDistance = (TextView) convertView.findViewById(R.id.dist);
             convertView.setTag(holder);
@@ -43,8 +45,10 @@ public class DestinationAdapter extends BaseAdapter {
         }
 
         Destination destination = biblio.get(position);
+        holder.tvType.setText(destination.getType());
         holder.tvTitre.setText(destination.getTitre());
-        holder.tvDistance.setText(destination.getDistance());
+        String dist=destination.getDistance().toString();
+        holder.tvDistance.setText(dist);
         return convertView;
     }
     /** * Retourne le nombre d'éléments */
