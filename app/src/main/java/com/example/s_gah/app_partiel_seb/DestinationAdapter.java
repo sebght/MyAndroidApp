@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -14,8 +17,10 @@ public class DestinationAdapter extends BaseAdapter {
     List<Destination> biblio;
     // LayoutInflater aura pour mission de charger notre fichier XML
     LayoutInflater inflater;
+    Context context;
 
     private class ViewHolder {
+        ImageView ivPic;
         TextView tvType;
         TextView tvTitre;
         TextView tvDistance;
@@ -34,6 +39,7 @@ public class DestinationAdapter extends BaseAdapter {
             Log.v("test", "convertView is null");
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.activity_destination, null);
+            holder.ivPic = (ImageView) convertView.findViewById(R.id.imageView);
             holder.tvType = (TextView) convertView.findViewById(R.id.type);
             holder.tvTitre = (TextView) convertView.findViewById(R.id.title);
             holder.tvDistance = (TextView) convertView.findViewById(R.id.dist);
@@ -45,6 +51,10 @@ public class DestinationAdapter extends BaseAdapter {
         }
 
         Destination destination = biblio.get(position);
+        // il faut un get de l'image à partir de l'url ici
+        String urlString = destination.getImage();
+        ImageView image=(ImageView) convertView.findViewById(R.id.imageView);
+        Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(image);
         holder.tvType.setText(destination.getType());
         holder.tvTitre.setText(destination.getTitre());
         String dist=destination.getDistance().toString();

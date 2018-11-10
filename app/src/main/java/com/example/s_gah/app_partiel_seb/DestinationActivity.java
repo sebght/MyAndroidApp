@@ -15,6 +15,7 @@ public class DestinationActivity extends ListActivity {
 
     List<Destination> mesDestinations = new ArrayList<Destination>();
     Double distance;
+    String media;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +28,25 @@ public class DestinationActivity extends ListActivity {
                 String type = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("type");
                 String title = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("display");
                 if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("distance")){
-                    Double distance = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getDouble("distance");
-                    mesDestinations.add(new Destination(type,title,distance));
-                    Log.i("Pass_parametre",type+" . "+title+" . "+distance.toString());
+                    distance = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getDouble("distance");
+                    if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("media")){
+                        media = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("media");
+                    }
+                    else {
+                        media="https://i.imgur.com/SWM3zmL.jpg";
+                    }
+                    mesDestinations.add(new Destination(media,type,title,distance));
+                    Log.i("Pass_parametre",media+" . "+type+" . "+title+" . "+distance.toString());
                 }
                 else {
-                    mesDestinations.add(new Destination(type,title,0.0));
-                    Log.i("Pass_parametre",type+" . "+title+" . no distance available");
+                    if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("media")){
+                        media = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("media");
+                    }
+                    else {
+                        media="https://i.imgur.com/SWM3zmL.jpg";
+                    }
+                    mesDestinations.add(new Destination(media,type,title,0.0));
+                    Log.i("Pass_parametre",media+" . "+type+" . "+title+" . no distance available");
                 }
             }
             Log.i("Pass_parametre",mesDestinations.toString());

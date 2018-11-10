@@ -1,9 +1,18 @@
 package com.example.s_gah.app_partiel_seb;
 
 public class Destination {
+    private String image;
     private String type;
     private String titre;
     private Double distance;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getType() {
         return type;
@@ -29,7 +38,8 @@ public class Destination {
         this.distance = distance;
     }
 
-    public Destination(String type,String titre, Double distance) {
+    public Destination(String image, String type,String titre, Double distance) {
+        this.image = image;
         this.type = type;
         this.titre = titre;
         this.distance = distance;
