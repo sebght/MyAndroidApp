@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -23,59 +25,91 @@ public class DestinationActivity extends ListActivity {
     String title;
     Double latitude;
     Double longitude;
+    String webview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String jsonReceived = getIntent().getStringExtra("data");
         mesDestinations.clear();
+        webview="www.lequipe.fr";
+        latitude=43.14554197717752;
+        longitude=6.00246207789143;
         try{
             JSONObject jsonObjectReceived = new JSONObject(jsonReceived);
-            Log.i("Pass_parametre","Le JSON: "+jsonObjectReceived);
-            for (int i=0;i<jsonObjectReceived.getJSONArray("data").length();i++){
-                String type = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("type");
-                title = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("display");
-                if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("distance")){
-                    distance = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getDouble("distance");
-                    if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("media")){
-                        media = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("media");
-                        if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("location")){
-                            latitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lat");
-                            longitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lon");
-                        }else latitude=1.1;
+            JSONArray myPlaces= jsonObjectReceived.getJSONArray("data");
+            Log.i("Pass_parametre",myPlaces.getJSONObject(0).getString("type") + mesDestinations.toString());
+            for (int i=0; i<myPlaces.length(); i++){
+                String myImageUrl= "";
+                Double myDistance=0.0;
+                if(myPlaces.getJSONObject(i).getString("type").contains("POI")){
+                    Log.i("Pass_parametre","POI" + mesDestinations.toString());
+                    if (myPlaces.getJSONObject(i).has("distance")){
+                        myDistance= myPlaces.getJSONObject(i).getDouble("distance");
+                    }
+                    if (myPlaces.getJSONObject(i).getString("media").length()!=0 && myPlaces.getJSONObject(i).getString("media")!= null) {
+                        myImageUrl= myPlaces.getJSONObject(i).getString("media");
                     }
                     else {
-                        media="https://i.imgur.com/SWM3zmL.jpg";
-                        if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("location")){
-                            latitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lat");
-                            longitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lon");
-                        }else latitude=1.1;
+                        myImageUrl = "https://static.thenounproject.com/png/628760-200.png";
                     }
-                    mesDestinations.add(new Destination(media,type,title,distance,latitude,longitude));
-                    Log.i("Pass_parametre",media+" . "+type+" . "+title+" . "+distance.toString());
+                    if (myPlaces.getJSONObject(i).getJSONObject("location").getJSONObject("coords").length()!=0) {
+                        latitude= myPlaces.getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lat");
+                        longitude=myPlaces.getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lon");
+                    }
+                    mesDestinations.add(new Destination(myImageUrl,myPlaces.getJSONObject(i).getString("type"),myPlaces.getJSONObject(i).getString("display"),
+                            myDistance,latitude,longitude,webview));
                 }
-                else {
-                    if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("media")){
-                        media = jsonObjectReceived.getJSONArray("data").getJSONObject(i).getString("media");
-                        if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("location")){
-                            latitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lat");
-                            longitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lon");
-                        }else latitude=1.1;
+                else if(myPlaces.getJSONObject(i).getString("type").contains("RESTAURANT")){
+                    Log.i("Pass_parametre","Restaurant" + mesDestinations.toString());
+                    if (myPlaces.getJSONObject(i).has("distance")){
+                        myDistance= myPlaces.getJSONObject(i).getDouble("distance");
+                    }
+                    if (myPlaces.getJSONObject(i).getString("media").length()!=0 && myPlaces.getJSONObject(i).getString("media")!= null) {
+                        myImageUrl= myPlaces.getJSONObject(i).getString("media");
                     }
                     else {
-                        media="https://i.imgur.com/SWM3zmL.jpg";
-                        if (jsonObjectReceived.getJSONArray("data").getJSONObject(i).has("location")){
-                            latitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lat");
-                            longitude=jsonObjectReceived.getJSONArray("data").getJSONObject(i).getJSONObject("location").getJSONObject("coords").getDouble("lon");
-                        }else latitude=1.1;
+                        myImageUrl = "https://static.thenounproject.com/png/628760-200.png";
                     }
-                    mesDestinations.add(new Destination(media,type,title,0.0,latitude,longitude));
-                    Log.i("Pass_parametre",media+" . "+type+" . "+title+" . no distance available");
+                    if (myPlaces.getJSONObject(i).getString("web").length()!=0 && myPlaces.getJSONObject(i).getString("web")!= null) {
+                        webview= myPlaces.getJSONObject(i).getString("web");
+                    }
+                    mesDestinations.add(new Destination(myImageUrl,myPlaces.getJSONObject(i).getString("type"),myPlaces.getJSONObject(i).getString("display"),
+                            myDistance, latitude,longitude,webview));
+                }
+                else if(myPlaces.getJSONObject(i).getString("type").contains("HOTEL")){
+                    Log.i("Pass_parametre","Hotel" + mesDestinations.toString());
+                    if (myPlaces.getJSONObject(i).has("distance")){
+                        myDistance= myPlaces.getJSONObject(i).getDouble("distance");
+                    }
+                    if (myPlaces.getJSONObject(i).getString("media").length()!=0 && myPlaces.getJSONObject(i).getString("media")!= null) {
+                        myImageUrl= myPlaces.getJSONObject(i).getString("media");
+                    }
+                    else {
+                        myImageUrl = "https://static.thenounproject.com/png/628760-200.png";
+                    }
+                    if (myPlaces.getJSONObject(i).getString("web").length()!=0 && myPlaces.getJSONObject(i).getString("web")!= null) {
+                        webview= myPlaces.getJSONObject(i).getString("web");
+                    }
+                    mesDestinations.add(new Destination(myImageUrl,myPlaces.getJSONObject(i).getString("type"),myPlaces.getJSONObject(i).getString("display"),
+                            myDistance, latitude,longitude,webview));
+                }
+                else if(myPlaces.getJSONObject(i).getString("type").contains("CITY")){
+                    if (myPlaces.getJSONObject(i).has("distance")){
+                        myDistance= myPlaces.getJSONObject(i).getDouble("distance");
+                    }
+                    if (myPlaces.getJSONObject(i).getString("media").length()!=0 && myPlaces.getJSONObject(i).getString("media")!= null) {
+                        myImageUrl= myPlaces.getJSONObject(i).getString("media");
+                    }
+                    else {
+                        myImageUrl = "https://static.thenounproject.com/png/628760-200.png";
+                    }
+                    mesDestinations.add(new Destination(myImageUrl,myPlaces.getJSONObject(i).getString("type"),myPlaces.getJSONObject(i).getString("display"),
+                            myDistance, latitude,longitude,webview));
                 }
             }
-            Log.i("Pass_parametre",mesDestinations.toString());
-        }
-        catch (Exception e){
-            Log.e("Pass_parametre",e.toString());
+        }catch(JSONException e){
+            Log.i("Pass_parametre", "CECI NE DEVRAIT PAS ARRIVER");
+            e.printStackTrace();
         }
         ListView myListView = getListView();
         DestinationAdapter adapter = new DestinationAdapter(this, mesDestinations);
@@ -86,6 +120,7 @@ public class DestinationActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Destination map = (Destination) getListView().getItemAtPosition(position);
+                webview=map.getWebview();
                 switch (map.getType()){
                     case "POI":
                         Intent i = new Intent(DestinationActivity.this,MapsActivity.class);
@@ -97,7 +132,7 @@ public class DestinationActivity extends ListActivity {
                     case "CITY":
                         break;
                     default:
-                        Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.lequipe.fr"));
+                        Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(webview));
                         startActivity(intent);
                         break;
                 }

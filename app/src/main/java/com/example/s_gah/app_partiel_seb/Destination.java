@@ -9,6 +9,15 @@ public class Destination {
     private Double distance;
     private Double latitude;
     private Double longitude;
+    private String webview;
+
+    public String getWebview() {
+        return webview;
+    }
+
+    public void setWebview(String webview) {
+        this.webview = webview;
+    }
 
     public Double getLatitude() {
         return latitude;
@@ -58,12 +67,13 @@ public class Destination {
         this.distance = distance;
     }
 
-    public Destination(String image, String type,String titre, Double distance,Double latitude,Double longitude) {
+    public Destination(String image, String type,String titre, Double distance,Double latitude,Double longitude, String webview) {
         this.image = image;
         this.type = type;
         this.titre = titre;
         this.distance = distance;
         this.latitude=latitude;
         this.longitude=longitude;
+        this.webview=webview;
     }
 }
