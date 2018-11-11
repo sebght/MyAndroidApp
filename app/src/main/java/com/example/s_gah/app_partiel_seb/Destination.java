@@ -1,10 +1,30 @@
 package com.example.s_gah.app_partiel_seb;
 
+import java.util.HashMap;
+
 public class Destination {
     private String image;
     private String type;
     private String titre;
     private Double distance;
+    private Double latitude;
+    private Double longitude;
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 
     public String getImage() {
         return image;
@@ -38,10 +58,12 @@ public class Destination {
         this.distance = distance;
     }
 
-    public Destination(String image, String type,String titre, Double distance) {
+    public Destination(String image, String type,String titre, Double distance,Double latitude,Double longitude) {
         this.image = image;
         this.type = type;
         this.titre = titre;
         this.distance = distance;
+        this.latitude=latitude;
+        this.longitude=longitude;
     }
 }

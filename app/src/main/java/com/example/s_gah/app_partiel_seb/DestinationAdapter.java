@@ -18,6 +18,9 @@ public class DestinationAdapter extends BaseAdapter {
     // LayoutInflater aura pour mission de charger notre fichier XML
     LayoutInflater inflater;
     Context context;
+    private static final int TYPE_ITEM_PAIR = 0;
+    private static final int TYPE_ITEM_IMPAIR = 1;
+    private static final int TYPE_MAX_COUNT = 2;
 
     private class ViewHolder {
         ImageView ivPic;
@@ -38,7 +41,12 @@ public class DestinationAdapter extends BaseAdapter {
         if (convertView==null){
             Log.v("test", "convertView is null");
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.activity_destination, null);
+            if (getItemViewType(position)==TYPE_ITEM_PAIR){
+                convertView = inflater.inflate(R.layout.activity_destination, null);
+            }
+            else {
+                convertView = inflater.inflate(R.layout.activity_destination2, null);
+            }
             holder.ivPic = (ImageView) convertView.findViewById(R.id.imageView);
             holder.tvType = (TextView) convertView.findViewById(R.id.type);
             holder.tvTitre = (TextView) convertView.findViewById(R.id.title);
@@ -51,15 +59,28 @@ public class DestinationAdapter extends BaseAdapter {
         }
 
         Destination destination = biblio.get(position);
-        // il faut un get de l'image à partir de l'url ici
         String urlString = destination.getImage();
         ImageView image=(ImageView) convertView.findViewById(R.id.imageView);
-        Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(image);
+        Picasso.get().load(urlString).into(image);
+
         holder.tvType.setText(destination.getType());
         holder.tvTitre.setText(destination.getTitre());
         String dist=destination.getDistance().toString();
         holder.tvDistance.setText(dist);
         return convertView;
+    }
+    /** * Retourne la vue à appliquer à l'item */
+    @Override
+    public int getItemViewType(int position) {
+        if (position%2==0){
+            return TYPE_ITEM_PAIR;
+        }
+        else return TYPE_ITEM_IMPAIR;
+    }
+    /** * Retourne le nombre de layouts différents */
+    @Override
+    public int getViewTypeCount() {
+        return TYPE_MAX_COUNT;
     }
     /** * Retourne le nombre d'éléments */
     @Override
