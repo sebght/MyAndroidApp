@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -19,12 +20,14 @@ import java.net.URL;
 
 public class SplashScreen extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 3000;
+    private ProgressBar mProgress;
     public String TAG = "NetworkActivity";
     String jsonToSend;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 
         Thread background = new Thread(new Runnable() {
             @Override
@@ -33,7 +36,13 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
         background.start();
-
+        Thread background2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                progress();
+            }
+        });
+        background2.start();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -44,6 +53,17 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, SPLASH_TIME_OUT);
     }
+
+        private void progress(){
+            for (int progress=0; progress<100; progress+=10) {
+                try {
+                    Thread.sleep(300);
+                    mProgress.setProgress(progress);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         private void loadFlux() {
             HttpURLConnection urlConnection = null;
