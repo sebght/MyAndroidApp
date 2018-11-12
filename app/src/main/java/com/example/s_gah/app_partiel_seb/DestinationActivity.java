@@ -121,6 +121,7 @@ public class DestinationActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Destination map = (Destination) getListView().getItemAtPosition(position);
                 webview=map.getWebview();
+                title=map.getTitre();
                 switch (map.getType()){
                     case "POI":
                         Intent i = new Intent(DestinationActivity.this,MapsActivity.class);
